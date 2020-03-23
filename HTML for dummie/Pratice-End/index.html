@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!--
+        1. trang home 
+        2  trang add
+        3. trang edit kem #01 02 03 (de edit theo axios)
+        //xem lai bai RESTAPI
+
+
+    -->
+    <a href="add.html"><button>Add</button></a>
+    <a href="edit.html"><button>Edit</button></a>
+    <ul id="ulContent">
+
+    </ul>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        
+    <script>
+var ulContent = document.getElementById("ulContent");
+users = []
+axios.get('http://localhost:3000/listUser')
+  .then(function (response) {
+    // handle success
+    users = response.data;
+    render(users);
+  })
+
+
+
+
+function render(users){
+    var content = users.map(function(element){
+        return "<li>" + element.name + "</li>";
+    })
+
+    ulContent.innerHTML = content.join("");
+}
+
+    </script>
+</body>
+</html>

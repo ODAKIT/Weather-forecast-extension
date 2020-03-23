@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Welcome to Firebase Hosting</title>
+
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/7.11.0/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/7.11.0/firebase-auth.js"></script>
+    <script defer src="/__/firebase/7.11.0/firebase-database.js"></script>
+    <script defer src="/__/firebase/7.11.0/firebase-messaging.js"></script>
+    <script defer src="/__/firebase/7.11.0/firebase-storage.js"></script>
+
+    <script defer src="/__/firebase/7.11.0/firebase-app.js"></script>
+    <script defer src="/__/firebase/7.11.0/firebase-firestore.js"></script>
+    <!-- initialize the SDK after all desired features are loaded -->
+    <script defer src="/__/firebase/init.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style media="screen">
+      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
+      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
+      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
+      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
+      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
+      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
+      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
+      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
+      @media (max-width: 600px) {
+        body, #message { margin-top: 0; background: white; box-shadow: none; }
+        body { border-top: 16px solid #ffa100; }
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" id = "input">
+    <button id = "btn">Add</button>
+    <ul id = "todo-list">
+     
+    </ul>
+
+    <script>
+        // var users = [
+        //     { name : "John"},
+        //     { name : "Alex"},
+        //     { name : "Leona"},
+        // ]
+
+       document.addEventListener("DOMContentLoaded",function(){
+    var ulContent = document.getElementById("todo-list");
+
+var users=[];
+
+var db = firebase.firestore();
+var docID =[];
+
+
+db.collection("users").get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      users.push(doc.data())
+      render(users);
+    });
+});
+
+
+ulContent.addEventListener("click",function(event){
+
+console.log(event.target.getAttribute("data-id"));
+  db.collection("users").where("name", "==", users[event.target.getAttribute("data-id")].name)  //sau khi query duoc gia tri thi get de tra ve gia tri sau dio then de lay data(vi get tra ve promise)
+    .get()
+    .then(function(querySnapshot) {
+      console.log(querySnapshot);
+      for(let i = 0 ; i<querySnapshot.size ; i++)
+      {
+        console.log(querySnapshot.docs[i].data());
+          users.splice(event.target.getAttribute("data-id"),1);
+          render(users);
+          db.collection("users").doc(querySnapshot.docs[i].id).delete();
+          break;
+      }
+        // querySnapshot.forEach(function(doc) {
+        //   console.log(querySnapshot);
+        //   users.splice(event.target.getAttribute("data-id"),1);
+        //   render(users);
+        //   db.collection("users").doc(doc.id).delete();
+        //   return;
+        //   console.log("ra");
+
+        // });
+    })
+
+})
+
+
+
+
+ var btn = document.getElementById("btn").onclick = Add;
+
+function Add(){
+    var newTodo = document.createElement("li");
+    //create new obj
+    var obj = {};
+    obj["name"] = document.getElementById("input").value;
+    
+    users.push(obj);
+    db.collection("users").add(obj)
+.then(function(docRef) {
+    console.log("Document written with ID: ", docRef.id);
+})
+.catch(function(error) {
+    console.error("Error adding document: ", error);
+});
+    //change html
+    newTodo.innerHTML = obj["name"] +"<i class=\"fa fa-window-close\""+ 'data-id=' + (users.length-1) +" aria-hidden=\"true\"></i>"
+    ulContent.appendChild(newTodo);
+    document.getElementById("input").value = "";
+
+            
+}
+
+//VAN DE XAY RA LA KHI RELOAD LAI THI DATA SE BI MAT DI , TA DUN G LOCAOSTORAE
+function render(users){
+    var content = users.map(function(user,index){
+        return "<li>" + user.name + "<i class=\"fa fa-window-close\"" + 'data-id ="' + index + "\"aria-hidden=\"true\"></i>" + '</li>';
+    })
+
+    var ulContent = document.getElementById("todo-list");
+    ulContent.innerHTML = content.join("");
+}
+
+
+  })
+
+    </script>
+  </body>
+</html>

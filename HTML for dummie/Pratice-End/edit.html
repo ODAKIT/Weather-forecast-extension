@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="edit.css">
+</head>
+
+<body>
+    <!--
+
+
+    -->
+    <div class="addDiv notActive" id="divInput">
+        <!-- <input type="text placeholder="New name" id="input"> -->
+        <input type="tel" id="input" placeholder="New name" pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}">
+        <button id=" btn" onclick="Edit()">Edit</button>
+    </div>
+    <ul id="ulContent">
+
+    </ul>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+        var clickEdits;
+        users = []
+        function get() {
+            axios.get('http://localhost:3000/listUser')
+                .then(function (response) {
+                    // handle success
+                    users = response.data;
+                    render(users);
+                    clickEdits = document.getElementsByTagName("a");
+                    setUp();
+                })
+        }
+        get();
+        var ulContent = document.getElementById("ulContent");
+
+        //when click 1 object , the remaining objects'll hiden
+
+
+
+        function render(users) {
+            var content = users.map(function (element, index) {
+                return "<a href = '#" + element.id + " ''><li " + 'id = "list' + index + '"' + 'data-key =' + element.id + ">" + element.name + "</li></a>";
+            })
+
+            ulContent.innerHTML = content.join("");
+        }
+
+
+        var clickVar = 0;
+        var curID = 0;
+        function setUp() {
+            for (let i = 0; i < clickEdits.length; i++) {
+
+                clickEdits[i].onclick = function () {
+                    clickVar++;
+                    curID = i;
+                    for (let j = 0; j < clickEdits.length; j++) {
+                        if (j == i)
+                            continue;
+                        var listtag = document.getElementById("list" + j);
+                        var divInput = document.getElementById("divInput");
+                        if (clickVar % 2 == 1) {
+                            listtag.classList.add("notActive");
+                            divInput.classList.remove("notActive");
+                        }
+                        else {
+                            listtag.classList.remove("notActive");
+                            divInput.classList.add("notActive");
+                        }
+                    }
+                }
+            }
+        }
+
+        function Edit(){
+            
+            axios.patch("http://localhost:3000/listUser/" + curID, {
+                        name: document.getElementById("input").value,
+                    })
+
+                users[curID].name = document.getElementById("input").value;
+                var curLI = document.getElementById("list"+curID);
+                curLI.textContent = users[curID].name;
+        }
+
+
+    </script>
+</body>
+
+</html>

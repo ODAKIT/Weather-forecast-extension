@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <input type="text" id = "input">
+    <button onclick="Add()">Add</button>
+    <ul id = "todo-list"
+    
+    ></ul>
+
+
+    <script>
+        // var users = [
+        //     { name : "John"},
+        //     { name : "Alex"},
+        //     { name : "Leona"},
+        // ]
+
+        var keyData = "key-data";
+        var users;
+
+        dataString = localStorage.getItem(keyData);
+        if(dataString==null)
+            users = [];
+         else users = JSON.parse(dataString);
+
+        function Add(){
+            var ulContent = document.getElementById("todo-list");
+            var newTodo = document.createElement("li");
+            //create new obj
+            var obj = {};
+            obj["name"] = document.getElementById("input").value;
+            users.push(obj);
+            //change html
+            newTodo.innerHTML = "<li>" + document.getElementById("input").value + "</li>";
+            ulContent.appendChild(newTodo);
+            document.getElementById("input").value = "";
+            localStorage.setItem(keyData,JSON.stringify(users));
+
+                    
+        }
+
+        //VAN DE XAY RA LA KHI RELOAD LAI THI DATA SE BI MAT DI , TA DUNG LOCAOSTORAE
+
+        function render(){
+            var content = users.map(function(user){
+                return "<li>" + user.name + "</li>";
+            })
+
+            var ulContent = document.getElementById("todo-list");
+            ulContent.innerHTML = content.join("");
+            localStorage.setItem(keyData,JSON.stringify(users));
+        }
+        render();
+
+
+    </script>
+</body>
+</html>
+
+
+<!--
+FIRE BASE DEPLOY , DAU TIEN CAN PHAI CAI DAT FIREBASE TRUOC BANG NODE PACKED MANAGER
+
+-> FIREBASE INIT
+-> FIREBASE DEPLOY ( co the test truoc bang firebase serve (day cung la mot cach tao mot local))
+
+
+
+-->

@@ -1,0 +1,34 @@
+li::before{
+    font-family: "FontAwesome";
+    content: "\f044";
+    padding-right: 10px;
+    transition: 0.2s;
+}
+
+li:hover::before{
+    color: blue;
+    font-size: 30px;
+}
+
+li{
+
+    padding: 10px;
+    /* cursor: pointer; */
+    transition: 0.4s;
+    opacity: 1;
+
+
+}
+
+a{
+    text-decoration: none;
+    color: black;
+    transform: translateX(100px);
+    width: 100%;
+    opacity: 1; 
+}
+
+
+.notActive{
+    opacity: 0;
+}
