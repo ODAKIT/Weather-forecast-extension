@@ -71,11 +71,11 @@ const idMap = new Map([
     [771, "mist"],
     [781, "mist"],
 
-    [800, "sun12"],
-    [801, "sun12"],
-    [802, "sun12"],
-    [803, "sun12"],
-    [804, "sun12"],
+    [800, "mist"],
+    [801, "mist"],
+    [802, "mist"],
+    [803, "mist"],
+    [804, "mist"],
     
 
 
@@ -112,9 +112,13 @@ $.ajax({
         weather.temp = data.main.temp;
         weather.maxTemp = data.main.temp_max;
         weather.minTemp = data.main.temp_min;
- 
+        weather.windSpeed = data.wind.speed;
+        weather.feels_like = data.main.feels_like;
         $(".weather .city").html(weather.city);
-        $(".detail .temperature .content").html(weather.temp);
+        $(".detail .temperature .content").html(weather.temp+"°C");
+        $(".detail .wind .content").html(weather.windSpeed);
+        $(".detail .feellike .content").html(weather.feels_like+"°C");
+
         $(".location .enum h1").html(capitalize(weather.weather_enum));
         $(".location .place").html(weather.city);
         $(".date .dayOfWeek").html(weather.dayOfWeek);
@@ -146,22 +150,28 @@ function ActiveIcon(id){
 
 
 var bgColor = "rgb(255, 255, 255)";
-
-if(hours>5 && hours<=7){
-    bgColor = "#ffbc05";    
+var imgsrc = "../imgsrc/sun12.svg"
+if(hours>5 && hours<=10){
+    bgColor = "#ffbc05"; 
+    imgsrc = "../imgsrc/sun.svg";    
 }
 else if(hours<=12){
     bgColor = "rgb(255, 188, 5)";    
+    imgsrc = "../imgsrc/sun12.svg"
 }
 else if(hours <=18){
     bgColor = "rgb(255, 165, 0)";
-
+    imgsrc = "../imgsrc/afternoon.svg"
 }
 else{
     bgColor = "rgb(230, 221, 228)";
+    imgsrc = "../imgsrc/night.svg"
+
 }
 
-$(".weather .ico").css("background-color", bgColor);
+$(".weather .bgtop .stt").css("background-color", bgColor);
+$(".weather .bgtop .stt").css("background-image","url(" + imgsrc +")");
+
 
 
 
